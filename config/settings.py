@@ -62,11 +62,23 @@ TEMPLATES = [
 ASGI_APPLICATION = 'config.asgi.application'
 
 # Channels Configuration
+REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
+REDIS_PORT = int(os.getenv('REDIS_PORT', 6379))
+REDIS_PASSWORD = os.getenv('REDIS_PASSWORD', None)
+
+redis_config = {
+    "host": REDIS_HOST,
+    "port": REDIS_PORT,
+}
+
+if REDIS_PASSWORD:
+    redis_config["password"] = REDIS_PASSWORD
+
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [(os.getenv('REDIS_HOST', 'localhost'), int(os.getenv('REDIS_PORT', 6379)))],
+            "hosts": [redis_config],
         },
     },
 }
